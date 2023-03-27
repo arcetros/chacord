@@ -1,19 +1,60 @@
 {
-  "name": "chacord",
-  "version": "1.0.0",
-  "description": "A simple Discord bot that allows you to manage challonge tournaments",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arcetros/chacord.git"
-  },
-  "author": "arcetros",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/arcetros/chacord/issues"
-  },
-  "homepage": "https://github.com/arcetros/chacord#readme"
+    "name": "chacord",
+    "version": "1.0.0",
+    "description": "A simple Discord bot that allows you to manage challonge tournaments",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "lint": "eslint . --ignore-path .gitignore --ext .ts",
+        "lint:fix": "eslint . --ignore-path .gitignore --ext .ts --fix",
+        "pretty": "prettier --check src/**/*.ts",
+        "pretty:write": "prettier --write src/**/*.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arcetros/chacord.git"
+    },
+    "author": "arcetros",
+    "license": "BSD-3-Clause",
+    "bugs": {
+        "url": "https://github.com/arcetros/chacord/issues"
+    },
+    "homepage": "https://github.com/arcetros/chacord#readme",
+    "engines": {
+        "node": ">=16.6.0",
+        "npm": ">=7.0.0"
+    },
+    "eslintConfig": {
+        "parser": "@typescript-eslint/parser",
+        "extends": [
+            "eslint:recommended",
+            "plugin:@typescript-eslint/recommended",
+            "prettier"
+        ],
+        "plugins": [
+            "prettier",
+            "@typescript-eslint"
+        ],
+        "ignorePatterns": [
+            "dist/*",
+            "index.js"
+        ]
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "trailingComma": "none",
+        "arrowParens": "avoid",
+        "printWidth": 120,
+        "proseWrap": "never"
+    },
+    "devDependencies": {
+        "@types/node": "^18.15.10",
+        "@typescript-eslint/eslint-plugin": "^5.56.0",
+        "@typescript-eslint/parser": "^5.56.0",
+        "eslint": "^8.36.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "prettier": "^2.8.7",
+        "typescript": "^5.0.2"
+    }
 }
