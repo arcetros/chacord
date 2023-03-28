@@ -2,9 +2,9 @@
     "name": "chacord",
     "version": "1.0.0",
     "description": "A simple Discord bot that allows you to manage challonge tournaments",
-    "main": "index.js",
-    "type": "module",
+    "main": "dist/index.js",
     "scripts": {
+        "dev": "nodemon src/index.ts",
         "build": "npm run lint && npm run compile",
         "compile": "npx swc src -d dist",
         "lint": "eslint . --ignore-path .gitignore --ext .ts",
@@ -58,7 +58,9 @@
         "eslint": "^8.36.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-prettier": "^4.2.1",
+        "nodemon": "^2.0.22",
         "prettier": "^2.8.7",
+        "ts-node": "^10.9.1",
         "typescript": "^5.0.2"
     }
 }
