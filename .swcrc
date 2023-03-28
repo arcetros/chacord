@@ -9,6 +9,6 @@
         "target": "es2021"
     },
     "module": {
-        "type": "es6"
+        "type": "commonjs"
     }
 }
