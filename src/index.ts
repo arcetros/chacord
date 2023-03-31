@@ -19,7 +19,6 @@ dotenv.config();
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN as string;
 
-// Initialize rest
 const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });

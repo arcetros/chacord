@@ -4,9 +4,10 @@
     "description": "A simple Discord bot that allows you to manage challonge tournaments",
     "main": "src/index.ts",
     "scripts": {
+        "clean": "rimraf dist",
         "start": "node -r dotenv/config ./dist/index.js",
         "dev": "nodemon src/index.ts",
-        "build": "npm run lint && npm run compile",
+        "build": "npm run clean && npm run lint && npm run compile",
         "compile": "npx swc src -d dist",
         "lint": "eslint . --ignore-path .gitignore --ext .ts",
         "lint:fix": "eslint . --ignore-path .gitignore --ext .ts --fix",
@@ -70,6 +71,7 @@
     },
     "dependencies": {
         "discord.js": "^14.8.0",
-        "dotenv": "^16.0.3"
+        "dotenv": "^16.0.3",
+        "rimraf": "^4.4.1"
     }
 }
