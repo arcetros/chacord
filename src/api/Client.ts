@@ -2,7 +2,7 @@ import { EventEmitter } from "events";
 
 import { Errors } from "./Errors";
 import { serialize, keysToObject, camelToUnderscore } from "../utils";
-import { RequestBuilder } from "../typings";
+import { RequestBuilder, Tournament } from "../typings";
 
 const BASE_URL = "https://api.challonge.com/v1";
 
@@ -24,10 +24,28 @@ export class Client extends EventEmitter {
         if (!this.options.format) {
             this.options.format = "json";
         }
+
+        this.setSubDomain(this.options.subDomain);
+    }
+
+    private setSubDomain(subdomain?: string) {
+        if (!subdomain) {
+            this.options.subDomain = "";
+        } else if (subdomain[subdomain.length - 1] !== "-") {
+            this.options.subDomain = subdomain + "-";
+        } else {
+            this.options.subDomain = subdomain;
+        }
+    }
+
+    public async getTournamentIndex(id: string): Promise<Tournament> {
+        return this.request(`/tournaments/${this.options.subDomain}${id}`, { method: "GET" }).then(
+            res => res.tournament
+        );
     }
 
     //TODO: Types
-    async request(endpoint: string, options: { [key: string]: any }): Promise<any> {
+    private async request(endpoint: string, options: { [key: string]: any }): Promise<any> {
         const { method, ...otherOptions } = options;
         const propertiesToDelete = ["path", "method"];
 
