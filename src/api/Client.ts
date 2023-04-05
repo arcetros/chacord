@@ -1,13 +1,18 @@
 import { EventEmitter } from "events";
 
+import { Tournament } from "./Tournament";
 import { Errors } from "./Errors";
 import { serialize, keysToObject, camelToUnderscore } from "../utils";
-import { RequestBuilder, Tournament } from "../typings";
+import { RequestBuilder } from "../typings";
 
-const BASE_URL = "https://api.challonge.com/v1";
+const BASE_URL = "https://api.challonge.com/v1/tournaments";
+
+//credits: https://github.com/Tidwell/node-challonge
 
 export class Client extends EventEmitter {
     private options: RequestBuilder;
+    public tournament: Tournament;
+
     constructor(options: RequestBuilder) {
         super();
         this.options = options || {};
@@ -24,8 +29,8 @@ export class Client extends EventEmitter {
         if (!this.options.format) {
             this.options.format = "json";
         }
-
         this.setSubDomain(this.options.subDomain);
+        this.tournament = new Tournament(this.options, this);
     }
 
     private setSubDomain(subdomain?: string) {
@@ -38,14 +43,8 @@ export class Client extends EventEmitter {
         }
     }
 
-    public async getTournamentIndex(id: string): Promise<Tournament> {
-        return this.request(`/tournaments/${this.options.subDomain}${id}`, { method: "GET" }).then(
-            res => res.tournament
-        );
-    }
-
     //TODO: Types
-    private async request(endpoint: string, options: { [key: string]: any }): Promise<any> {
+    public async request(endpoint: string, options: { [key: string]: any }): Promise<any> {
         const { method, ...otherOptions } = options;
         const propertiesToDelete = ["path", "method"];
 
@@ -55,6 +54,7 @@ export class Client extends EventEmitter {
             ...keysToObject(otherOptions, camelToUnderscore),
             api_key: this.options.api_key
         };
+
         const response = await fetch(`${BASE_URL}${endpoint}.${this.options.format}?${serialize(queryParams)}`, {
             method: method
         });
@@ -69,7 +69,14 @@ export class Client extends EventEmitter {
                 )
             );
         if (response.status === 401) throw new Error(Errors.INVALID_API_KEY);
-        if (response.status === 422) throw new Error(Errors.UNEXPECTED_ERROR);
+        if (response.status === 422) {
+            const errorResponse = await response.json().catch(() => null);
+            if (errorResponse && errorResponse.errors && errorResponse.errors.length > 0) {
+                throw new Error(errorResponse.errors[0]);
+            } else {
+                throw new Error(Errors.UNEXPECTED_ERROR);
+            }
+        }
         if (response.status !== 200) throw new Error(response.statusText);
 
         const parsedResponse = await response.json().catch(() => {
@@ -79,6 +86,7 @@ export class Client extends EventEmitter {
         if (!parsedResponse) {
             throw new Error(Errors.SOMETHING_WENT_WRONG.replace(/{cause}/, response.statusText));
         }
+
         return parsedResponse;
     }
 }
