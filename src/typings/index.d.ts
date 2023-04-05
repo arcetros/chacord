@@ -15,7 +15,7 @@ export interface RequestBuilder {
     messageProperties?: boolean;
 }
 
-export interface Tournament {
+export interface ITournament {
     acceptAttachments: boolean;
     allowParticipantMatchReporting: boolean;
     anonymousVoting: boolean;
