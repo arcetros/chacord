@@ -6,3 +6,11 @@ export interface Command {
     data: SlashCommandBuilder;
     execute(...args: any): any;
 }
+
+export interface RequestBuilder {
+    api_key: string;
+    subDomain?: string;
+    format?: string;
+    timeout?: number;
+    messageProperties?: boolean;
+}
