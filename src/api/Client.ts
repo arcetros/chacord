@@ -4,6 +4,7 @@ import { Tournament } from "./Tournament";
 import { Errors } from "./Errors";
 import { serialize, keysToObject, camelToUnderscore } from "../utils";
 import { RequestBuilder } from "../typings";
+import { Participant } from "./Participant";
 
 const BASE_URL = "https://api.challonge.com/v1/tournaments";
 
@@ -12,6 +13,7 @@ const BASE_URL = "https://api.challonge.com/v1/tournaments";
 export class Client extends EventEmitter {
     private options: RequestBuilder;
     public tournament: Tournament;
+    public participant: Participant;
 
     constructor(options: RequestBuilder) {
         super();
@@ -31,6 +33,7 @@ export class Client extends EventEmitter {
         }
         this.setSubDomain(this.options.subDomain);
         this.tournament = new Tournament(this.options, this);
+        this.participant = new Participant(this.options, this);
     }
 
     private setSubDomain(subdomain?: string) {

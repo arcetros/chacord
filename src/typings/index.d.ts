@@ -80,3 +80,44 @@ export interface ITournament {
     teamConvertable: boolean;
     groupStagesWereStarted: boolean;
 }
+
+export interface IParticipant {
+    id: number;
+    tournament_id: number;
+    name: string;
+    seed: number;
+    active: boolean;
+    created_at: string;
+    updated_at: string;
+    invite_email: null | string;
+    final_rank: number;
+    misc: null;
+    icon: null;
+    on_waiting_list: boolean;
+    invitation_id: null;
+    group_id: null;
+    checked_in_at: null;
+    ranked_member_id: null;
+    custom_field_response: null;
+    clinch: null;
+    integration_uids: null;
+    challonge_username: null;
+    challonge_user_id: null;
+    challonge_email_address_verified: null;
+    removable: boolean;
+    participatable_or_invitation_attached: boolean;
+    confirm_remove: boolean;
+    invitation_pending: boolean;
+    display_name_with_invitation_email_address: string;
+    email_hash: null;
+    username: null;
+    display_name: string;
+    attached_participatable_portrait_url: null;
+    can_check_in: boolean;
+    checked_in: boolean;
+    reactivatable: boolean;
+    check_in_open: boolean;
+    group_player_ids: Array<any>;
+    has_irrelevant_seed: boolean;
+    ordinal_seed: string;
+}

@@ -4,10 +4,8 @@ import { Client } from "./Client";
 export class Tournament {
     private subdomain: string;
     private client: Client;
-    private options: RequestBuilder;
     constructor(options: RequestBuilder, client: Client) {
         this.subdomain = options.subDomain as string;
-        this.options = options;
         this.client = client;
     }
 
@@ -18,8 +16,12 @@ export class Tournament {
         return this.subdomain;
     }
 
-    // Retrieve a set of tournaments created with your account
-    // https://api.challonge.com/v1/documents/tournaments/index
+    /**
+     * @async
+     * @description Retrieve a set of tournaments created with your account
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/index} for a full list of object properties
+     */
     public async index(): Promise<ITournament[]> {
         if (this.getRawSubdomain()) {
             this.subdomain = this.getRawSubdomain();
@@ -27,14 +29,27 @@ export class Tournament {
         return this.client.request("", { method: "GET" }).then(res => res.map((t: any) => t.tournament));
     }
 
-    // Retrieve a single tournament record
-    // https://api.challonge.com/v1/documents/tournaments/show
-    public async show(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}`, { method: "GET" }).then(res => res.tournament);
+    /**
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description Retrieve a single tournament record
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/show} for a full list of object properties
+     */
+    public async show(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "GET" }).then(res => res.tournament);
     }
 
-    // Create a new tournament
-    // https://api.challonge.com/v1/documents/tournaments/create
+    /**
+     * @description Create a new tournament with the specified name, URL, tournament type, and subdomain (if applicable)
+     * @async
+     * @param {string} props.tournament.name - The name of the tournament.
+     * @param {string=} props.tournament.url - The optional URL for the tournament.
+     * @param {string} props.tournament.tournamentType - The type of the tournament.
+     * @param {string=} props.tournament.subDomain - The optional subdomain for the tournament.
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/create} for a full list of object properties
+     */
     public async create(props: {
         tournament: { name: string; url?: string; tournamentType: string; subDomain?: string };
     }): Promise<ITournament> {
@@ -44,64 +59,116 @@ export class Tournament {
         return this.client.request("", { method: "POST", tournament: props.tournament });
     }
 
-    // Update a tournament registered on your account
-    // https://api.challonge.com/v1/documents/tournaments/update
+    /**
+     * @description Update a tournament properties registered on your account
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @param {string} props.tournament.name - The name of the tournament.
+     * @param {string=} props.tournament.url - The optional URL for the tournament.
+     * @param {string} props.tournament.tournamentType - The type of the tournament.
+     * @param {string=} props.tournament.subDomain - The optional subdomain for the tournament.
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/update} for a full list of object properties
+     */
     public async update(
-        id: string,
+        tournament_id: string,
         props: {
             tournament: { name?: string; url?: string; tournamentType?: string; subDomain?: string };
         }
-    ) {
-        return this.client.request(`/${this.options.subDomain}${id}`, { method: "PUT", tournament: props.tournament });
+    ): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}`, {
+            method: "PUT",
+            tournament: props.tournament
+        });
     }
 
-    // Delete a tournament registerd on your account
-    // https://api.challonge.com/v1/documents/tournaments/destroy
-    public async destroy(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}`, { method: "DELETE" });
+    /**
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description Delete a tournament registered on your account
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/destroy} for a full list of object properties
+     */
+    public async destroy(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "DELETE" });
     }
 
-    // Start a tournament registerd on your account
-    // https://api.challonge.com/v1/documents/tournaments/start
-    public async start(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}/start`, { method: "POST" });
+    /**
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description Start a tournament registered on your account
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/start} for a full list of object properties
+     */
+    public async start(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}/start`, { method: "POST" });
     }
 
-    // Finalize a tournament that has had all match scores submitted
-    // https://api.challonge.com/v1/documents/tournaments/finalize
-    public async finalize(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}/finalize`, { method: "POST" });
+    /**
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description Finalize a tournament that has had all match scores submitted
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/finalize} for a full list of object properties
+     */
+    public async finalize(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}/finalize`, { method: "POST" });
     }
 
-    // Reset a tournament, clearing all scores and attachments. You can then add/remove/edit participants
-    // https://api.challonge.com/v1/documents/tournaments/reset
-    public async reset(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}/reset`, { method: "POST" });
+    /**
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description Reset a tournament, clearing all scores and attachments. You can then add/remove/edit participants
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/reset} for a full list of object properties
+     */
+    public async reset(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}/reset`, { method: "POST" });
     }
 
-    // This should be invoked after a tournament's check-in window closes before the tournament is started.
-    // - Marks participants who have not checked in as inactive.
-    // - Moves inactive participants to bottom seeds (ordered by original seed).
-    // - Transitions the tournament state from 'checking_in' to 'checked_in'
-    // NOTE: Checked in participants on the waiting list will be promoted if slots become available.
-    // https://api.challonge.com/v1/documents/tournaments/process_check_ins
-    public async processCheckIns(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}/process_check_ins`, { method: "POST" });
+    /**
+     * Transitions a tournament from 'checking_in' to 'checked_in' after the check-in window has closed.
+     * Inactive participants who have not checked in are moved to the bottom seeds.
+     * Checked-in participants on the waiting list will be promoted if slots become available.
+     *
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description This should be invoked after a tournament's check-in window closes before the tournament is started.
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/process_check_ins} for a full list of object properties
+     */
+    public async processCheckIns(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}/process_check_ins`, { method: "POST" });
     }
 
-    // When your tournament is in a 'checking_in' or 'checked_in' state, there's no way to edit the tournament's start time (start_at) or check-in duration (check_in_duration). You must first abort check-in, then you may edit those attributes
-    // - Makes all participants active and clears their checked_in_at times.
-    // - Transitions the tournament state from 'checking_in' or 'checked_in' to 'pending'
-    // https://api.challonge.com/v1/documents/tournaments/abort_check_in
-    public async abortCheckIn(id: string): Promise<ITournament> {
-        return this.client.request(`/${this.options.subDomain}${id}/abort_check_in`, { method: "POST" });
+    /**
+     * - Transitions the tournament state from 'checking_in' or 'checked_in' to 'pending'
+     *
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @description When your tournament is in a 'checking_in' or 'checked_in' state, there's no way to edit the tournament's start time (start_at) or check-in duration (check_in_duration). You must first abort check-in, then you may edit those attributes
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/abort_check_in} for a full list of object properties
+     */
+    public async abortCheckIn(tournament_id: string): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}/abort_check_in`, { method: "POST" });
     }
 
-    // Sets the state of the tournament to start accepting predictions. Your tournament's 'prediction_method' attribute must be set to 1 (exponential scoring) or 2 (linear scoring) to use this option.
-    // Note: Note: Once open for predictions, match records will be persisted, so participant additions and removals will no longer be permitted.
-    // https://api.challonge.com/v1/documents/tournaments/open_for_predictions
-    public async openForPredictions(id: string, includeParticipants: number, includeMatches: number) {
-        return this.client.request(`/${this.options.subDomain}${id}/open_for_predictions`, {
+    /**
+     * @async
+     * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @param {number} includeParticipants - 0 or 1; includes an array of associated participant records
+     * @param {number} includeMatches - 0 or 1; includes an array of associated match records
+     * @description Sets the state of the tournament to start accepting predictions. Your tournament's 'prediction_method' attribute must be set to 1 (exponential scoring) or 2 (linear scoring) to use this option.
+     * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
+     * See the {@link https://api.challonge.com/v1/documents/tournaments/open_for_predictions} for a full list of object properties
+     */
+    public async openForPredictions(
+        tournament_id: string,
+        includeParticipants: number,
+        includeMatches: number
+    ): Promise<ITournament> {
+        return this.client.request(`/${this.subdomain}${tournament_id}/open_for_predictions`, {
             method: "POST",
             includeParticipants,
             includeMatches
