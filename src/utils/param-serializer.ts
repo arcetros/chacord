@@ -19,7 +19,8 @@ export function serialize(a: Record<string, unknown>): string {
                     if (rbracket.test(prefix)) {
                         add(prefix, obj[i]);
                     } else {
-                        buildParams(prefix + "[" + (typeof obj[i] === "object" ? i : "") + "]", obj[i]);
+                        console.log(obj[i], i);
+                        buildParams(prefix + "[]", obj[i]);
                     }
                 }
             } else if (obj && String(obj) === "[object Object]") {
