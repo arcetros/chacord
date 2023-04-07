@@ -26,7 +26,9 @@ export class Tournament {
         if (this.getRawSubdomain()) {
             this.subdomain = this.getRawSubdomain();
         }
-        return this.client.request("", { method: "GET" }).then(res => res.map((t: any) => t.tournament));
+        return this.client
+            .request("", { method: "GET" })
+            .then((res: { tournament: ITournament }[]) => res.map(({ tournament }) => tournament));
     }
 
     /**
@@ -37,7 +39,9 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/show} for a full list of object properties
      */
     public async show(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "GET" }).then(res => res.tournament);
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}`, { method: "GET" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -56,7 +60,9 @@ export class Tournament {
         if (this.getRawSubdomain()) {
             props.tournament.subDomain = this.getRawSubdomain();
         }
-        return this.client.request("", { method: "POST", tournament: props.tournament });
+        return this.client
+            .request("", { method: "POST", tournament: props.tournament })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -76,10 +82,12 @@ export class Tournament {
             tournament: { name?: string; url?: string; tournamentType?: string; subDomain?: string };
         }
     ): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}`, {
-            method: "PUT",
-            tournament: props.tournament
-        });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}`, {
+                method: "PUT",
+                tournament: props.tournament
+            })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -90,7 +98,9 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/destroy} for a full list of object properties
      */
     public async destroy(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "DELETE" });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}`, { method: "DELETE" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -101,7 +111,9 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/start} for a full list of object properties
      */
     public async start(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/start`, { method: "POST" });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}/start`, { method: "POST" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -112,7 +124,9 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/finalize} for a full list of object properties
      */
     public async finalize(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/finalize`, { method: "POST" });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}/finalize`, { method: "POST" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -123,7 +137,9 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/reset} for a full list of object properties
      */
     public async reset(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/reset`, { method: "POST" });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}/reset`, { method: "POST" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -138,7 +154,9 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/process_check_ins} for a full list of object properties
      */
     public async processCheckIns(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/process_check_ins`, { method: "POST" });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}/process_check_ins`, { method: "POST" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
@@ -151,27 +169,31 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/abort_check_in} for a full list of object properties
      */
     public async abortCheckIn(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/abort_check_in`, { method: "POST" });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}/abort_check_in`, { method: "POST" })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 
     /**
      * @async
      * @param {string} tournament_id - The ID of the tournament to process the action.
-     * @param {number} includeParticipants - 0 or 1; includes an array of associated participant records
-     * @param {number} includeMatches - 0 or 1; includes an array of associated match records
+     * @param {boolean} includeParticipants - false or true; includes an array of associated participant records
+     * @param {boolean} includeMatches - false or true; includes an array of associated match records
      * @description Sets the state of the tournament to start accepting predictions. Your tournament's 'prediction_method' attribute must be set to 1 (exponential scoring) or 2 (linear scoring) to use this option.
      * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
      * See the {@link https://api.challonge.com/v1/documents/tournaments/open_for_predictions} for a full list of object properties
      */
     public async openForPredictions(
         tournament_id: string,
-        includeParticipants: number,
-        includeMatches: number
+        includeParticipants = false,
+        includeMatches = false
     ): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/open_for_predictions`, {
-            method: "POST",
-            includeParticipants,
-            includeMatches
-        });
+        return this.client
+            .request(`/${this.subdomain}${tournament_id}/open_for_predictions`, {
+                method: "POST",
+                includeParticipants: includeParticipants ? "1" : "0",
+                includeMatches: includeMatches ? "1" : "0"
+            })
+            .then(({ tournament }: { tournament: ITournament }) => tournament);
     }
 }
