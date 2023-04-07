@@ -26,9 +26,8 @@ export class Tournament {
         if (this.getRawSubdomain()) {
             this.subdomain = this.getRawSubdomain();
         }
-        return this.client
-            .request("", { method: "GET" })
-            .then((res: { tournament: ITournament }[]) => res.map(({ tournament }) => tournament));
+        return this.client.request("", { method: "GET" });
+        // .then((res: { tournament: ITournament }[]) => res.map(({ tournament }) => tournament));
     }
 
     /**
@@ -39,9 +38,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/show} for a full list of object properties
      */
     public async show(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}`, { method: "GET" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "GET" });
     }
 
     /**
@@ -60,9 +57,7 @@ export class Tournament {
         if (this.getRawSubdomain()) {
             props.tournament.subDomain = this.getRawSubdomain();
         }
-        return this.client
-            .request("", { method: "POST", tournament: props.tournament })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request("", { method: "POST", tournament: props.tournament });
     }
 
     /**
@@ -82,12 +77,10 @@ export class Tournament {
             tournament: { name?: string; url?: string; tournamentType?: string; subDomain?: string };
         }
     ): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}`, {
-                method: "PUT",
-                tournament: props.tournament
-            })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}`, {
+            method: "PUT",
+            tournament: props.tournament
+        });
     }
 
     /**
@@ -98,9 +91,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/destroy} for a full list of object properties
      */
     public async destroy(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}`, { method: "DELETE" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "DELETE" });
     }
 
     /**
@@ -111,9 +102,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/start} for a full list of object properties
      */
     public async start(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/start`, { method: "POST" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}/start`, { method: "POST" });
     }
 
     /**
@@ -124,9 +113,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/finalize} for a full list of object properties
      */
     public async finalize(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/finalize`, { method: "POST" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}/finalize`, { method: "POST" });
     }
 
     /**
@@ -137,9 +124,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/reset} for a full list of object properties
      */
     public async reset(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/reset`, { method: "POST" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}/reset`, { method: "POST" });
     }
 
     /**
@@ -154,9 +139,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/process_check_ins} for a full list of object properties
      */
     public async processCheckIns(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/process_check_ins`, { method: "POST" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}/process_check_ins`, { method: "POST" });
     }
 
     /**
@@ -169,9 +152,7 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/abort_check_in} for a full list of object properties
      */
     public async abortCheckIn(tournament_id: string): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/abort_check_in`, { method: "POST" })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}/abort_check_in`, { method: "POST" });
     }
 
     /**
@@ -188,12 +169,10 @@ export class Tournament {
         includeParticipants = false,
         includeMatches = false
     ): Promise<ITournament> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/open_for_predictions`, {
-                method: "POST",
-                includeParticipants: includeParticipants ? "1" : "0",
-                includeMatches: includeMatches ? "1" : "0"
-            })
-            .then(({ tournament }: { tournament: ITournament }) => tournament);
+        return this.client.request(`/${this.subdomain}${tournament_id}/open_for_predictions`, {
+            method: "POST",
+            includeParticipants: includeParticipants ? "1" : "0",
+            includeMatches: includeMatches ? "1" : "0"
+        });
     }
 }

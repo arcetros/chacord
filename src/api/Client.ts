@@ -68,8 +68,6 @@ export class Client extends EventEmitter {
             method: method
         });
 
-        console.log(`${BASE_URL}${endpoint}.${this.options.format}?${serialize(queryParams)}`);
-
         if (response.status >= 500 && response.status < 528)
             throw new Error(`Server Error: ${response.status} ${response.statusText}`);
         if (response.status === 400)
@@ -98,6 +96,9 @@ export class Client extends EventEmitter {
             throw new Error(Errors.SOMETHING_WENT_WRONG.replace(/{cause}/, response.statusText));
         }
 
-        return parsedResponse;
+        const extractedResponse = Array.isArray(parsedResponse)
+            ? parsedResponse.flatMap(item => Object.values(item)[0])
+            : Object.values(parsedResponse)[0];
+        return extractedResponse;
     }
 }

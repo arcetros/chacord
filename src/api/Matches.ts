@@ -23,13 +23,11 @@ export class Matches {
         state: "all" | "pending" | "open" | "complete" = "all",
         participant_id?: string
     ): Promise<IMatch[] | undefined> {
-        const response = await this.client
-            .request(`/${this.subdomain}${tournament_id}/matches`, {
-                method: "GET",
-                state,
-                participant_id
-            })
-            .then((res: { match: IMatch }[]) => res.map(({ match }) => match));
+        const response = await this.client.request(`/${this.subdomain}${tournament_id}/matches`, {
+            method: "GET",
+            state,
+            participant_id
+        });
 
         if (response.length < 1) {
             throw new Error(Errors.MATCH_NO_MATCHES_FOUND.replace(/{state}/, state));
@@ -45,9 +43,7 @@ export class Matches {
      * @returns {Promise<IMatch>} - A promise that resolves with the `Matches` object
      */
     public async show(tournament_id: string, match_id: string): Promise<IMatch> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/matches/${match_id}`, { method: "GET" })
-            .then(({ match }: { match: IMatch }) => match);
+        return this.client.request(`/${this.subdomain}${tournament_id}/matches/${match_id}`, { method: "GET" });
     }
 
     /**
@@ -66,9 +62,10 @@ export class Matches {
         match_id: string,
         props: { match: { scoresCsv?: string; winnerId?: string; player1Votes?: number; player2Votes?: number } }
     ): Promise<IMatch> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/matches/${match_id}`, { method: "PUT", match: props.match })
-            .then(({ match }: { match: IMatch }) => match);
+        return this.client.request(`/${this.subdomain}${tournament_id}/matches/${match_id}`, {
+            method: "PUT",
+            match: props.match
+        });
     }
 
     /**
@@ -79,9 +76,7 @@ export class Matches {
      * @returns {Promise<IMatch>} - A promise that resolves with the `Matches` object
      */
     public async reOpen(tournament_id: string, match_id: string): Promise<IMatch> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/matches/${match_id}/reopen`, { method: "POST" })
-            .then(({ match }: { match: IMatch }) => match);
+        return this.client.request(`/${this.subdomain}${tournament_id}/matches/${match_id}/reopen`, { method: "POST" });
     }
 
     /**
@@ -92,9 +87,9 @@ export class Matches {
      * @returns {Promise<IMatch>} - A promise that resolves with the `Matches` object
      */
     public async markUnderwayAt(tournament_id: string, match_id: string): Promise<IMatch> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/matches/${match_id}/mark_as_underway`, { method: "POST" })
-            .then(({ match }: { match: IMatch }) => match);
+        return this.client.request(`/${this.subdomain}${tournament_id}/matches/${match_id}/mark_as_underway`, {
+            method: "POST"
+        });
     }
 
     /**
@@ -105,8 +100,8 @@ export class Matches {
      * @returns {Promise<IMatch>} - A promise that resolves with the `Matches` object
      */
     public async unmarkUnderwayAt(tournament_id: string, match_id: string): Promise<IMatch> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/matches/${match_id}/unmark_as_underway`, { method: "POST" })
-            .then(({ match }: { match: IMatch }) => match);
+        return this.client.request(`/${this.subdomain}${tournament_id}/matches/${match_id}/unmark_as_underway`, {
+            method: "POST"
+        });
     }
 }

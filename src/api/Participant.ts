@@ -16,9 +16,7 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/index} for a full list of object properties
      */
     public async index(tournament_id: string): Promise<IParticipant[]> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants`, { method: "GET" })
-            .then((res: { participant: IParticipant }[]) => res.map(({ participant }) => participant));
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants`, { method: "GET" });
     }
 
     /**
@@ -45,12 +43,10 @@ export class Participant {
             };
         }
     ): Promise<IParticipant> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants`, {
-                method: "POST",
-                participant: props.participant
-            })
-            .then(({ participant }: { participant: IParticipant }) => participant);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants`, {
+            method: "POST",
+            participant: props.participant
+        });
     }
 
     /**
@@ -77,12 +73,10 @@ export class Participant {
             }[];
         }
     ): Promise<IParticipant[]> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/bulk_add`, {
-                method: "POST",
-                participants: props.participants
-            })
-            .then((res: { participant: IParticipant }[]) => res.map(({ participant }) => participant));
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/bulk_add`, {
+            method: "POST",
+            participants: props.participants
+        });
     }
 
     /**
@@ -95,12 +89,10 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/participants/show} for a full list of object properties
      */
     public async show(tournament_id: string, participant_id: string, includeMatches?: number): Promise<IParticipant> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/${participant_id}`, {
-                method: "GET",
-                includeMatches
-            })
-            .then(({ participant }: { participant: IParticipant }) => participant);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/${participant_id}`, {
+            method: "GET",
+            includeMatches
+        });
     }
 
     /**
@@ -123,12 +115,10 @@ export class Participant {
             participant: { name: string; inviteNameOrEmail?: string; email?: string; seed?: number; misc?: string };
         }
     ): Promise<IParticipant> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/${participant_id}`, {
-                method: "PUT",
-                participant: props.participant
-            })
-            .then(({ participant }: { participant: IParticipant }) => participant);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/${participant_id}`, {
+            method: "PUT",
+            participant: props.participant
+        });
     }
 
     /**
@@ -140,11 +130,9 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/participants/check_in} for a full list of object properties
      */
     public async checkIn(tournament_id: string, participant_id: string): Promise<IParticipant> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/${participant_id}/check_in`, {
-                method: "POST"
-            })
-            .then(({ participant }: { participant: IParticipant }) => participant);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/${participant_id}/check_in`, {
+            method: "POST"
+        });
     }
 
     /**
@@ -156,11 +144,9 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/participants/undo_check_in} for a full list of object properties
      */
     public async undoCheckIn(tournament_id: string, participant_id: string): Promise<IParticipant> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/${participant_id}/undo_check_in`, {
-                method: "POST"
-            })
-            .then(({ participant }: { participant: IParticipant }) => participant);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/${participant_id}/undo_check_in`, {
+            method: "POST"
+        });
     }
 
     /**
@@ -172,11 +158,9 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/participants/destroy} for a full list of object properties
      */
     public async destroy(tournament_id: string, participant_id: string): Promise<IParticipant> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/${participant_id}`, {
-                method: "DELETE"
-            })
-            .then(({ participant }: { participant: IParticipant }) => participant);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/${participant_id}`, {
+            method: "DELETE"
+        });
     }
 
     /**
@@ -187,9 +171,7 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/participants/clear} for a full list of object properties
      */
     public async clear(tournament_id: string): Promise<string> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/clear`, { method: "DELETE" })
-            .then((res: { message: string }) => res.message);
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/clear`, { method: "DELETE" });
     }
 
     /**
@@ -200,8 +182,6 @@ export class Participant {
      * See the {@link https://api.challonge.com/v1/documents/participants/randomize} for a full list of object properties
      */
     public async randomize(tournament_id: string): Promise<IParticipant[]> {
-        return this.client
-            .request(`/${this.subdomain}${tournament_id}/participants/randomize`, { method: "POST" })
-            .then((res: { participant: IParticipant }[]) => res.map(({ participant }) => participant));
+        return this.client.request(`/${this.subdomain}${tournament_id}/participants/randomize`, { method: "POST" });
     }
 }
