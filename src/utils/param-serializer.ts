@@ -7,6 +7,7 @@ export function serialize(a: Record<string, unknown>): string {
 
     function add(k: string, v: any) {
         v = typeof v === "function" ? v() : v === null ? "" : v === undefined ? "" : v;
+        if (!v) return;
         s[s.length] = encodeURIComponent(k) + "=" + encodeURIComponent(v);
     }
 

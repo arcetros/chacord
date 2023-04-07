@@ -5,6 +5,7 @@ import { Errors } from "./Errors";
 import { serialize, keysToObject, camelToUnderscore } from "../utils";
 import { RequestBuilder } from "../typings";
 import { Participant } from "./Participant";
+import { Matches } from "./Matches";
 
 const BASE_URL = "https://api.challonge.com/v1/tournaments";
 
@@ -14,16 +15,20 @@ export class Client extends EventEmitter {
     private options: RequestBuilder;
     public tournament: Tournament;
     public participant: Participant;
+    public matches: Matches;
 
+    /**
+     *
+     * @param options.api_key - Your API key (required unless you're using HTTP basic authentication)
+     * @param options.subDomain - Sets the subdomain and automatically passes tournament[subdomain] and prefixes the subdomain to tournament urls.  If you don't want to pass a subdomain to the constructor, and want to use an organization (or multiple organizations), you must use client.setSubdomain('subdomain') before making api calls.
+     * @param options.format - The format of the response data. Defaults to 'json'.  If set to 'json', will return javascript objects.  Anything else (including 'xml') will return the raw text string.
+     */
     constructor(options: RequestBuilder) {
         super();
         this.options = options || {};
 
         if (typeof options != "object") {
             throw new Error("You have to specify options in client constructor");
-        }
-        if (typeof this.options.messageProperties === undefined) {
-            this.options.messageProperties = true;
         }
         if (!options.hasOwnProperty.call(options, "api_key")) {
             throw new Error("You have to specify Challonge API key");
@@ -34,6 +39,7 @@ export class Client extends EventEmitter {
         this.setSubDomain(this.options.subDomain);
         this.tournament = new Tournament(this.options, this);
         this.participant = new Participant(this.options, this);
+        this.matches = new Matches(this.options, this);
     }
 
     private setSubDomain(subdomain?: string) {
@@ -61,6 +67,8 @@ export class Client extends EventEmitter {
         const response = await fetch(`${BASE_URL}${endpoint}.${this.options.format}?${serialize(queryParams)}`, {
             method: method
         });
+
+        console.log(`${BASE_URL}${endpoint}.${this.options.format}?${serialize(queryParams)}`);
 
         if (response.status >= 500 && response.status < 528)
             throw new Error(`Server Error: ${response.status} ${response.statusText}`);

@@ -3,5 +3,6 @@ export const Errors = {
     INVALID_RESPONSE_BODY: "An error occured while converting to JSON",
     ERROR_CODE_CAUSE: "Code: {code} - {cause}!",
     UNEXPECTED_ERROR: "The data provided is not recognized by Challonge",
-    SOMETHING_WENT_WRONG: "Something went wrong, {cause}"
+    SOMETHING_WENT_WRONG: "Something went wrong, {cause}",
+    MATCH_NO_MATCHES_FOUND: "No matches were found in {state} state"
 };

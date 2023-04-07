@@ -12,7 +12,6 @@ export interface RequestBuilder {
     subDomain?: string;
     format?: string;
     timeout?: number;
-    messageProperties?: boolean;
 }
 
 export interface ITournament {
@@ -120,4 +119,33 @@ export interface IParticipant {
     group_player_ids: Array<any>;
     has_irrelevant_seed: boolean;
     ordinal_seed: string;
+}
+
+export interface IMatch {
+    attachment_count: null | number;
+    created_at: string;
+    group_id: null | number;
+    has_attachment: boolean;
+    id: number;
+    identifier: string;
+    location: null | string;
+    loser_id: null | number;
+    player1_id: number;
+    player1_is_prereq_match_loser: boolean;
+    player1_prereq_match_id: null | number;
+    player1_votes: null | number;
+    player2_id: number;
+    player2_is_prereq_match_loser: boolean;
+    player2_prereq_match_id: null | number;
+    player2_votes: null | number;
+    round: number;
+    scheduled_time: null | string;
+    started_at: string;
+    state: string;
+    tournament_id: number;
+    underway_at: null | string;
+    updated_at: string;
+    winner_id: null | number;
+    prerequisite_match_ids_csv: string;
+    scores_csv: string;
 }
