@@ -15,6 +15,8 @@ export interface RequestBuilder {
 }
 
 export interface ITournament {
+    participants?: any[];
+    matches?: any[];
     acceptAttachments: boolean;
     allowParticipantMatchReporting: boolean;
     anonymousVoting: boolean;

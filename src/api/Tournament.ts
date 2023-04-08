@@ -169,10 +169,19 @@ export class Tournament {
         includeParticipants = false,
         includeMatches = false
     ): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/open_for_predictions`, {
-            method: "POST",
-            includeParticipants: includeParticipants ? "1" : "0",
-            includeMatches: includeMatches ? "1" : "0"
-        });
+        const response: ITournament = await this.client.request(
+            `/${this.subdomain}${tournament_id}/open_for_predictions`,
+            {
+                method: "POST",
+                includeParticipants: includeParticipants ? "1" : "0",
+                includeMatches: includeMatches ? "1" : "0"
+            }
+        );
+        const newResponse: ITournament = {
+            ...response,
+            matches: this.client.extractResponse(response?.matches),
+            participants: this.client.extractResponse(response?.participants)
+        };
+        return newResponse;
     }
 }

@@ -52,7 +52,11 @@ export class Client extends EventEmitter {
         }
     }
 
-    //TODO: Types
+    public extractResponse(response: Record<string, any> | undefined) {
+        if (!response) return;
+        return Array.isArray(response) ? response.flatMap(item => Object.values(item)[0]) : Object.values(response)[0];
+    }
+
     public async request(endpoint: string, options: { [key: string]: any }): Promise<any> {
         const { method, ...otherOptions } = options;
         const propertiesToDelete = ["path", "method"];
@@ -96,9 +100,7 @@ export class Client extends EventEmitter {
             throw new Error(Errors.SOMETHING_WENT_WRONG.replace(/{cause}/, response.statusText));
         }
 
-        const extractedResponse = Array.isArray(parsedResponse)
-            ? parsedResponse.flatMap(item => Object.values(item)[0])
-            : Object.values(parsedResponse)[0];
+        const extractedResponse = this.extractResponse(parsedResponse);
         return extractedResponse;
     }
 }
