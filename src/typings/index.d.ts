@@ -1,4 +1,14 @@
-import { SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder, ClientEvents } from "discord.js";
+import Bot from "../structures/Bot";
+
+export interface Event {
+    name: keyof ClientEvents;
+    runOnce: boolean;
+    run: Execute;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Execute = (bot: Bot, ...params: any[]) => Promise<void>;
 
 export interface Command {
     permissions?: string[];
@@ -6,6 +16,8 @@ export interface Command {
     data: SlashCommandBuilder;
     execute(...args: any): any;
 }
+
+type ExecuteCommand = (bot: Bot, interaction: ChatInputCommandInteraction, args: any[]) => Promise<void>;
 
 export interface RequestBuilder {
     api_key: string;
