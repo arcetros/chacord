@@ -1,4 +1,4 @@
-import { CommandInteraction, Message, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import Bot from "./Bot";
 
 export abstract class Commands {
@@ -15,8 +15,7 @@ export abstract class Commands {
     abstract category: string;
     abstract guildOnly: boolean;
     abstract data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
-    abstract execute: (message: Message, args?: string[]) => Promise<Message>;
-    abstract executeSlash: (interaction: CommandInteraction) => Promise<void>;
+    abstract execute: (interaction: CommandInteraction) => Promise<void>;
 
     public constructor(client: Bot) {
         this.client = client;

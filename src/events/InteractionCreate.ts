@@ -1,18 +1,20 @@
-import { Collection, CommandInteraction, Interaction } from "discord.js";
+import { Collection, CommandInteraction, Interaction, InteractionResponse } from "discord.js";
 import Bot from "../structures/Bot";
 import Events from "../structures/Events";
 
-export default class Ready extends Events {
+export default class InteractionCreate extends Events {
     constructor(client: Bot) {
         super(client, "interactionCreate", false);
     }
 
-    public runOnce = false;
-    public async run(client: Bot, interaction: Interaction) {
+    public async run(client: Bot, interaction: Interaction): Promise<InteractionResponse | undefined> {
         if (!interaction.isChatInputCommand) return;
         if (interaction instanceof CommandInteraction) {
             const command = client.commands.get(interaction.commandName);
-            if (!command) return;
+            if (!command) {
+                client.logger.error(`Unknown slash command: ${command}`);
+                return;
+            }
             if (!client.cooldowns.has(interaction.commandName)) {
                 client.cooldowns.set(interaction.commandName, new Collection());
             }
@@ -32,7 +34,15 @@ export default class Ready extends Events {
             }
             timestamps.set(interaction.user.id, now);
             setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
-            command.execute(interaction);
+            try {
+                command.execute(interaction);
+            } catch (e: unknown) {
+                await interaction.reply({
+                    content: "There was an error while executing this command!",
+                    ephemeral: true
+                });
+                client.logger.error(`An error occured in ${interaction.commandName}: ${(e as Error).message}`);
+            }
         }
     }
 }

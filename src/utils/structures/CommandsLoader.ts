@@ -1,10 +1,11 @@
 import { Collection } from "discord.js";
 import { join } from "path";
+import Bot from "../../structures/Bot";
 import { Command } from "../../typings";
 import { recursiveWalkDir } from "../recursive-walk-dir";
 
 export class CommandsLoader extends Collection<string, Command> {
-    public constructor() {
+    public constructor(public client: Bot) {
         super();
     }
 
@@ -13,15 +14,7 @@ export class CommandsLoader extends Collection<string, Command> {
         const FoundCommand = (await import(join(currentDir, file))).default;
         const command = new FoundCommand() as Command;
 
-        if (!command.data) {
-            console.warn(`The command ${join(currentDir, file)} doesn't have a name`);
-            return;
-        }
-
-        if (!command.execute) {
-            console.warn(`The command ${join(currentDir, file)} doesn't have a executable function`);
-            return;
-        }
+        this.client.logger.success(`Loaded command: ${command.data.name}`);
         this.set(command.data.name, command);
     }
 

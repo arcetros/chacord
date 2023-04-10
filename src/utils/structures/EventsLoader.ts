@@ -10,22 +10,14 @@ export class EventsLoader {
         const FoundEvent = (await import(join(currentDir, file))).default;
         const { name, run, runOnce } = new FoundEvent(this.client) as Event;
 
-        if (!name) {
-            console.warn(`The event ${join(currentDir, file)} doesn't have a name!`);
-            return;
-        }
-
-        if (!run) {
-            console.warn(`The event ${name} doesn't have an executable function!`);
-            return;
-        }
+        this.client.logger.success(`Loaded events: ${name}`);
 
         if (runOnce) {
             this.client.once(name, run.bind(null, this.client));
             return;
         }
 
-        this.client.on(name, (...args) => {
+        this.client.on(name, (...args: unknown[]) => {
             run(this.client, ...args.flat(2));
         });
     }
