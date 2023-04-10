@@ -26,7 +26,7 @@ export default class Ping extends Commands {
         return message.channel.send(this.ping(message.createdTimestamp));
     };
     executeSlash = async (interaction: CommandInteraction): Promise<void> => {
-        await interaction.reply({ content: this.ping(interaction.createdTimestamp) });
+        interaction.reply({ content: this.ping(interaction.createdTimestamp) });
     };
 
     private ping(startTime: number): string {
