@@ -1,5 +1,5 @@
 import { ITournament, RequestBuilder } from "../typings";
-import { Client } from "./Client";
+import Client from "./Client";
 
 export class Tournament {
     private subdomain: string;
@@ -33,12 +33,28 @@ export class Tournament {
     /**
      * @async
      * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @param {boolean} includeParticipants - false or true; includes an array of associated participant records
+     * @param {boolean} includeMatches - false or true; includes an array of associated match records
      * @description Retrieve a single tournament record
      * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
      * See the {@link https://api.challonge.com/v1/documents/tournaments/show} for a full list of object properties
      */
-    public async show(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}`, { method: "GET" });
+    public async show(
+        tournament_id: string,
+        includeParticipants = false,
+        includeMatches = false
+    ): Promise<ITournament> {
+        const response = await this.client.request(`/${this.subdomain}${tournament_id}`, {
+            method: "GET",
+            includeParticipants: includeParticipants ? "1" : "0",
+            includeMatches: includeMatches ? "1" : "0"
+        });
+        const newResponse: ITournament = {
+            ...response,
+            matches: this.client.extractResponse(response?.matches),
+            participants: this.client.extractResponse(response?.participants)
+        };
+        return newResponse;
     }
 
     /**
