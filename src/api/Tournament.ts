@@ -68,12 +68,15 @@ export class Tournament {
      * See the {@link https://api.challonge.com/v1/documents/tournaments/create} for a full list of object properties
      */
     public async create(props: {
-        tournament: { name: string; url?: string; tournamentType: string; subDomain?: string };
+        tournament: { name: string; url?: string; tournamentType: string; startAt: Date; subDomain?: string };
     }): Promise<ITournament> {
         if (this.getRawSubdomain()) {
             props.tournament.subDomain = this.getRawSubdomain();
         }
-        return this.client.request("", { method: "POST", tournament: props.tournament });
+        return this.client.request("", {
+            method: "POST",
+            tournament: { ...props.tournament, startAt: props.tournament.startAt.toISOString() }
+        });
     }
 
     /**
