@@ -9,10 +9,10 @@ export class CommandsLoader extends Collection<string, Command> {
         super();
     }
 
-    private async loadCallback(currentDir: string, file: string) {
+    private async loadCallback(currentDir: string, file: string): Promise<void> {
         if (!(file.endsWith(".ts") || file.endsWith(".js"))) return;
         const FoundCommand = (await import(join(currentDir, file))).default;
-        const command = new FoundCommand() as Command;
+        const command = new FoundCommand(this.client) as Command;
 
         this.client.logger.success(`Loaded command: ${command.data.name}`);
         this.set(command.data.name, command);

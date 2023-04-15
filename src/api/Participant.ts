@@ -1,5 +1,5 @@
 import { IParticipant, RequestBuilder } from "../typings";
-import { Client } from "./Client";
+import Client from "./Client";
 
 export class Participant {
     private subdomain: string;

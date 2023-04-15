@@ -11,7 +11,7 @@ const BASE_URL = "https://api.challonge.com/v1/tournaments";
 
 //credits: https://github.com/Tidwell/node-challonge
 
-export class Client extends EventEmitter {
+export default class Client extends EventEmitter {
     private options: RequestBuilder;
     public tournament: Tournament;
     public participant: Participant;

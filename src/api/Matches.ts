@@ -1,5 +1,5 @@
 import { IMatch, RequestBuilder } from "../typings";
-import { Client } from "./Client";
+import Client from "./Client";
 import { Errors } from "./Errors";
 
 export class Matches {

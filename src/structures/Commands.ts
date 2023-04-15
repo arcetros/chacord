@@ -1,7 +1,7 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import Bot from "./Bot";
 
-export abstract class Commands {
+export default abstract class Commands {
     client: Bot;
     abstract name: string;
     abstract visible: boolean;

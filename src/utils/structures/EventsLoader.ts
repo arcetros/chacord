@@ -5,7 +5,7 @@ import { recursiveWalkDir } from "../recursive-walk-dir";
 
 export class EventsLoader {
     constructor(public client: Bot) {}
-    private async loadCallback(currentDir: string, file: string) {
+    private async loadCallback(currentDir: string, file: string): Promise<void> {
         if (!(file.endsWith(".ts") || file.endsWith(".js"))) return;
         const FoundEvent = (await import(join(currentDir, file))).default;
         const { name, run, runOnce } = new FoundEvent(this.client) as Event;

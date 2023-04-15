@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, CommandInteraction } from "discord.js";
-import { Commands } from "../structures/Commands";
+import Commands from "../structures/Commands";
 
 export default class Ping extends Commands {
     name = "ping";
