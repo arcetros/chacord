@@ -61,7 +61,7 @@ export default class CreateTournament extends Commands {
                 }
             });
 
-            await interaction.reply({
+            interaction.reply({
                 content: `Succesfully created ${response.name} with id ${"`"}${response.url}${"`"}`,
                 components: [
                     new ActionRowBuilder<ButtonBuilder>().addComponents(

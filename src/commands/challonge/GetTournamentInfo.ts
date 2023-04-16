@@ -62,16 +62,18 @@ export default class GetTournamentInfo extends Commands {
                     },
                     {
                         name: "Participants",
-                        value: response.participants.map(participant => `> ${participant.name}`).join("\n")
+                        value:
+                            response.participants.length > 0
+                                ? response.participants.map(participant => `> ${participant.name}`).join("\n")
+                                : "No participants yet"
                     }
                 )
-                .setImage("https://challonge.com/askjdfhalsdkfha.svg")
                 .setColor("#ed9645")
                 .setFooter({
                     text: `STATUS: ${this.getEmojiForState(response.state)}`
                 });
 
-            await interaction.reply({ embeds: [embed] });
+            interaction.reply({ embeds: [embed] });
         } catch (err) {
             interaction.reply({ content: `${err}` });
         }
