@@ -1,4 +1,4 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, InteractionResponse, SlashCommandBuilder } from "discord.js";
 import Bot from "./Bot";
 
 export default abstract class Commands {
@@ -19,5 +19,26 @@ export default abstract class Commands {
 
     public constructor(client: Bot) {
         this.client = client;
+    }
+
+    public async isTournamentManager(interaction: CommandInteraction): Promise<boolean | InteractionResponse<boolean>> {
+        const guild = this.client.guilds.cache.get(interaction.guildId!);
+        const member = await guild?.members.fetch(interaction.user.id);
+
+        const getTournamentManagerRole = guild?.roles.cache
+            .map(role => {
+                return { id: role.id, name: role.name };
+            })
+            .find(role => role.name === "Tournament Manager");
+
+        if (!getTournamentManagerRole) {
+            return interaction.reply({ content: "Tournament Manager role not found, run /initrole first" });
+        }
+
+        if (member?.permissions.has("Administrator")) return true;
+        if (member?.roles.cache.has(getTournamentManagerRole.id)) {
+            return true;
+        }
+        return false;
     }
 }

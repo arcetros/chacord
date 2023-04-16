@@ -45,6 +45,11 @@ export default class CreateTournament extends Commands {
                 .setRequired(false)
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
+        if (!(await this.isTournamentManager(interaction))) {
+            interaction.reply({ content: "Insufficent permission" });
+            return;
+        }
+
         const tournament_name = interaction.options.get("tournament_name")?.value as string;
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const tournament_date = interaction.options.get("tournament_date")!.value as string;

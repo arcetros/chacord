@@ -38,11 +38,6 @@ export default class GetTournamentInfo extends Commands {
             const startDate = response.start_at ? new Date(response.start_at).toLocaleString() : null;
 
             const embed = new EmbedBuilder()
-                .setAuthor({
-                    name: `Challonge Bot`,
-                    url: "https://github.com/arcetros/chacord",
-                    iconURL: "https://raw.githubusercontent.com/arcetros/chacord/main/assets/challonge_icon.png"
-                })
                 .setTitle(`${response.name} - [ID: ${tournament_id}]`)
                 .setURL(response.full_challonge_url)
                 .addFields(

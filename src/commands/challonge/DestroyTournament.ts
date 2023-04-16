@@ -30,6 +30,11 @@ export default class DestroyTournament extends Commands {
                 .setRequired(true)
         );
     execute = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
+        if (!(await this.isTournamentManager(interaction))) {
+            interaction.reply({ content: "Insufficent permission" });
+            return;
+        }
+
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         try {
             const response = await this.challonge.tournament.destroy(tournament_id);
