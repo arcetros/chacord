@@ -1,6 +1,6 @@
 {
     "name": "chacord",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A simple Discord bot that allows you to manage challonge tournaments",
     "main": "src/index.ts",
     "scripts": {
@@ -12,7 +12,8 @@
         "lint": "eslint . --ignore-path .gitignore --ext .ts",
         "lint:fix": "eslint . --ignore-path .gitignore --ext .ts --fix",
         "pretty": "prettier --check src/**/*.ts",
-        "pretty:write": "prettier --write src/**/*.ts"
+        "pretty:write": "prettier --write src/**/*.ts",
+        "release": "standard-version"
     },
     "repository": {
         "type": "git",
