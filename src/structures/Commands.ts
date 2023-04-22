@@ -1,4 +1,4 @@
-import { CommandInteraction, InteractionResponse, SlashCommandBuilder } from "discord.js";
+import { CommandInteraction, Guild, InteractionResponse, SlashCommandBuilder } from "discord.js";
 import Bot from "./Bot";
 
 export default abstract class Commands {
@@ -21,22 +21,39 @@ export default abstract class Commands {
         this.client = client;
     }
 
-    public async isTournamentManager(interaction: CommandInteraction): Promise<boolean | InteractionResponse<boolean>> {
-        const guild = this.client.guilds.cache.get(interaction.guildId!);
-        const member = await guild?.members.fetch(interaction.user.id);
-
-        const getTournamentManagerRole = guild?.roles.cache
+    public getTournamentManagerRole(guild: Guild | undefined):
+        | {
+              id: string;
+              name: string;
+          }
+        | undefined {
+        const role = guild?.roles.cache
             .map(role => {
                 return { id: role.id, name: role.name };
             })
             .find(role => role.name === "Tournament Manager");
 
-        if (!getTournamentManagerRole) {
+        if (!role) return undefined;
+
+        return role;
+    }
+
+    public async isTournamentManager(
+        interaction: CommandInteraction,
+        userId?: string
+    ): Promise<boolean | InteractionResponse<boolean>> {
+        const guild = this.client.guilds.cache.get(interaction.guildId!);
+        // Will get provided userId first if exist, otherwise it will uses user id that are using the interaction command
+        const member = await guild?.members.fetch(userId || interaction.user.id);
+
+        const tournamentRole = this.getTournamentManagerRole(guild);
+
+        if (!tournamentRole) {
             return interaction.reply({ content: "Tournament Manager role not found, run /initrole first" });
         }
 
         if (member?.permissions.has("Administrator")) return true;
-        if (member?.roles.cache.has(getTournamentManagerRole.id)) {
+        if (member?.roles.cache.has(tournamentRole.id)) {
             return true;
         }
         return false;
