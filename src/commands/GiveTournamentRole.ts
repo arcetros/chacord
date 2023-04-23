@@ -2,8 +2,6 @@ import { CommandInteraction, SlashCommandBuilder, PermissionFlagsBits } from "di
 import Bot from "../structures/Bot";
 import Commands from "../structures/Commands";
 
-const DISCORD_TAG_REGEX = /<@(\d+)>/;
-
 export default class InitRole extends Commands {
     constructor(public client: Bot) {
         super(client);
@@ -34,14 +32,13 @@ export default class InitRole extends Commands {
         }
 
         const userId = interaction.options.get("user")?.value as string;
-        const match = DISCORD_TAG_REGEX.exec(userId);
+        const newUserId = await this.sanitizeUserId(userId, interaction);
 
-        if (!match) {
-            interaction.reply({ content: "User is not valid, make sure to tag them  directly" });
+        if (typeof newUserId === "object") {
             return;
         }
 
-        const targetMember = await guild?.members.fetch(match[1]);
+        const targetMember = await guild?.members.fetch(newUserId);
 
         if (!targetMember) {
             interaction.reply({ content: "User not found" });

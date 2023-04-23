@@ -1,8 +1,9 @@
-import { CommandInteraction, Guild, InteractionResponse, SlashCommandBuilder } from "discord.js";
+import { CacheType, CommandInteraction, Guild, InteractionResponse, SlashCommandBuilder } from "discord.js";
 import Bot from "./Bot";
 
 export default abstract class Commands {
     client: Bot;
+    private DISCORD_TAG_REGEX = /<@(\d+)>/;
     abstract name: string;
     abstract visible: boolean;
     abstract description: string;
@@ -57,5 +58,16 @@ export default abstract class Commands {
             return true;
         }
         return false;
+    }
+
+    public sanitizeUserId(
+        user: string,
+        interaction: CommandInteraction<CacheType>
+    ): string | Promise<InteractionResponse<boolean>> {
+        const match = this.DISCORD_TAG_REGEX.exec(user);
+        if (!match) {
+            return interaction.reply({ content: "User is not valid, make sure to tag them directly" });
+        }
+        return match[1];
     }
 }
