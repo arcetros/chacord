@@ -65,7 +65,7 @@ export default class GetTournamentInfo extends Commands {
                 )
                 .setColor("#ed9645")
                 .setFooter({
-                    text: `STATUS: ${this.getEmojiForState(response.state)}`
+                    text: `STATUS: ${this.getEmojiForState(response.state)} | OWNER ID: ${response.description}`
                 });
 
             interaction.reply({ embeds: [embed] });
