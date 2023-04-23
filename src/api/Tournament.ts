@@ -62,13 +62,21 @@ export class Tournament {
      * @async
      * @param {string} props.tournament.name - The name of the tournament.
      * @param {string=} props.tournament.url - The optional URL for the tournament.
+     * @param {string} props.description - 	Description/instructions to be displayed above the bracket
      * @param {string} props.tournament.tournamentType - The type of the tournament.
      * @param {string=} props.tournament.subDomain - The optional subdomain for the tournament.
      * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
      * See the {@link https://api.challonge.com/v1/documents/tournaments/create} for a full list of object properties
      */
     public async create(props: {
-        tournament: { name: string; url?: string; tournamentType: string; startAt: Date; subDomain?: string };
+        tournament: {
+            name: string;
+            url?: string;
+            tournamentType: string;
+            startAt: Date;
+            subDomain?: string;
+            description?: string;
+        };
     }): Promise<ITournament> {
         if (this.getRawSubdomain()) {
             props.tournament.subDomain = this.getRawSubdomain();

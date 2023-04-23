@@ -6,6 +6,8 @@
 	<i>A simple Discord bot that allows you to manage challonge tournaments</i>
 </p>
 
+> **Warning** Challonge API V1 will be deprecated sooner or later, and it will be rate-limited and no longer updated
+
 ## Features
 
 Chacord comes with the following features:

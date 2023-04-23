@@ -61,6 +61,7 @@ export default class CreateTournament extends Commands {
                 tournament: {
                     name: tournament_name,
                     tournamentType: "single elimination",
+                    description: `${interaction.user.id}`,
                     url: tournament_id,
                     startAt: dateTime
                 }
