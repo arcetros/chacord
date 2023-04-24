@@ -30,24 +30,26 @@ export default class DestroyTournament extends Commands {
                 .setRequired(true)
         );
     execute = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
+        await interaction.deferReply();
+
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const tournamentOwner = (await this.challonge.tournament.show(tournament_id)).description;
 
         if (!(await this.isTournamentManager(interaction))) {
-            interaction.reply({ content: "Insufficent permission" });
+            interaction.editReply({ content: "Insufficient permission" });
             return;
         }
 
         if (tournamentOwner !== interaction.user.id) {
-            interaction.reply({ content: "Cant destroy tournament, you are not the owner of this tournament" });
+            interaction.editReply({ content: "Cant destroy tournament, you are not the owner of this tournament" });
             return;
         }
 
         try {
             const response = await this.challonge.tournament.destroy(tournament_id);
-            interaction.reply({ content: `${response.name} is successfully destroyed` });
+            interaction.editReply({ content: `${response.name} is successfully destroyed` });
         } catch (err) {
-            interaction.reply({ content: `${err}` });
+            interaction.editReply({ content: `${err}` });
         }
     };
 }

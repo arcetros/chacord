@@ -14,7 +14,7 @@ export default class InitRole extends Commands {
     args = false;
     usage = "";
     example = "";
-    cooldown = 10;
+    cooldown = 0;
     category = "general";
     guildOnly = true;
     data = new SlashCommandBuilder()
@@ -23,11 +23,13 @@ export default class InitRole extends Commands {
         .addStringOption(option => option.setName("user").setDescription("Target user").setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
     execute = async (interaction: CommandInteraction): Promise<void> => {
+        await interaction.deferReply();
+
         const guild = this.client.guilds.cache.get(interaction.guildId!);
         const tournamentRole = this.getTournamentManagerRole(guild);
 
         if (!tournamentRole) {
-            interaction.reply({ content: "Tournament Manager role not found, run /initrole first" });
+            interaction.editReply({ content: "Tournament Manager role not found, run /initrole first" });
             return;
         }
 
@@ -41,19 +43,19 @@ export default class InitRole extends Commands {
         const targetMember = await guild?.members.fetch(newUserId);
 
         if (!targetMember) {
-            interaction.reply({ content: "User not found" });
+            interaction.editReply({ content: "User not found" });
             return;
         }
 
         if (await this.isTournamentManager(interaction, targetMember.user.id)) {
-            interaction.reply({ content: `<@${targetMember.user.id}> is already have Tournament Manager role` });
+            interaction.editReply({ content: `<@${targetMember.user.id}> is already have Tournament Manager role` });
             return;
         }
 
         targetMember?.roles
             .add(tournamentRole.id)
             .then(() =>
-                interaction.reply({ content: `<@${targetMember.user.id}> is granted Tournament Manager role` })
+                interaction.editReply({ content: `<@${targetMember.user.id}> is granted Tournament Manager role` })
             );
     };
 }
