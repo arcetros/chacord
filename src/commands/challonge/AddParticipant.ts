@@ -39,10 +39,16 @@ export default class AddParticipant extends Commands {
                 .setRequired(false)
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
-        const guild = this.client.guilds.cache.get(interaction.guildId!);
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const participantName = interaction.options.get("participant_name")?.value as string;
-        const tournament = await this.challonge.tournament.show(tournament_id);
+        const seed = interaction.options.get("seed")?.value as string;
+
+        const tournament = await this.challonge.tournament.show(tournament_id, true);
+
+        // Map and extract the user ID inside bracket
+        const currrentParticipants = tournament.participants.map(
+            participant => participant.name.match(/^\[(.*?)\]\s*(.*)$/)[1]
+        );
 
         if (!(await this.isTournamentManager(interaction))) {
             interaction.reply({ content: "Insufficent permission" });
@@ -55,18 +61,29 @@ export default class AddParticipant extends Commands {
         }
 
         const userId = await this.sanitizeUserId(participantName, interaction);
-
         if (typeof userId === "object") {
             return;
         }
 
+        if (seed && isNaN(Number(seed))) {
+            interaction.reply({ content: "Seed value must be a number" });
+            return;
+        }
+
+        if (currrentParticipants.includes(userId)) {
+            interaction.reply({ content: `<@${userId}> is already on the bracket` });
+            return;
+        }
+
+        const guild = this.client.guilds.cache.get(interaction.guildId!);
         const targetUser = await guild?.members.fetch(userId);
 
         try {
             await this.challonge.participant
                 .create(tournament_id, {
                     participant: {
-                        name: `[${userId}] - ${targetUser?.user.username}`
+                        name: `[${userId}] - ${targetUser?.user.username}`,
+                        seed: Number(seed)
                     }
                 })
                 .then(() => {
