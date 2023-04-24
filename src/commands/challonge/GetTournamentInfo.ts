@@ -31,7 +31,10 @@ export default class GetTournamentInfo extends Commands {
                 .setRequired(true)
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
+        await interaction.deferReply();
+
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
+
         try {
             const response = await this.challonge.tournament.show(tournament_id, true);
 
@@ -68,9 +71,9 @@ export default class GetTournamentInfo extends Commands {
                     text: `STATUS: ${this.getEmojiForState(response.state)} | OWNER ID: ${response.description}`
                 });
 
-            interaction.reply({ embeds: [embed] });
+            interaction.editReply({ embeds: [embed] });
         } catch (err) {
-            interaction.reply({ content: `${err}` });
+            interaction.editReply({ content: `${err}` });
         }
     };
 

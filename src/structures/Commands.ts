@@ -1,4 +1,4 @@
-import { CacheType, CommandInteraction, Guild, InteractionResponse, SlashCommandBuilder } from "discord.js";
+import { CacheType, CommandInteraction, Guild, Message, SlashCommandBuilder } from "discord.js";
 import Bot from "./Bot";
 
 export default abstract class Commands {
@@ -42,7 +42,7 @@ export default abstract class Commands {
     public async isTournamentManager(
         interaction: CommandInteraction,
         userId?: string
-    ): Promise<boolean | InteractionResponse<boolean>> {
+    ): Promise<boolean | Message<boolean>> {
         const guild = this.client.guilds.cache.get(interaction.guildId!);
         // Will get provided userId first if exist, otherwise it will uses user id that are using the interaction command
         const member = await guild?.members.fetch(userId || interaction.user.id);
@@ -50,7 +50,7 @@ export default abstract class Commands {
         const tournamentRole = this.getTournamentManagerRole(guild);
 
         if (!tournamentRole) {
-            return interaction.reply({ content: "Tournament Manager role not found, run /initrole first" });
+            return interaction.editReply({ content: "Tournament Manager role not found, run /initrole first" });
         }
 
         if (member?.permissions.has("Administrator")) return true;
@@ -63,10 +63,10 @@ export default abstract class Commands {
     public sanitizeUserId(
         user: string,
         interaction: CommandInteraction<CacheType>
-    ): string | Promise<InteractionResponse<boolean>> {
+    ): string | Promise<Message<boolean>> {
         const match = this.DISCORD_TAG_REGEX.exec(user);
         if (!match) {
-            return interaction.reply({ content: "User is not valid, make sure to tag them directly" });
+            return interaction.editReply({ content: "User is not valid, make sure to tag them directly" });
         }
         return match[1];
     }

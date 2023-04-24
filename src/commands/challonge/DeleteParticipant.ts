@@ -33,6 +33,8 @@ export default class AddParticipant extends Commands {
                 .setRequired(true)
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
+        await interaction.deferReply();
+
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const participantName = interaction.options.get("participant_name")?.value as string;
 
@@ -44,12 +46,12 @@ export default class AddParticipant extends Commands {
         );
 
         if (!(await this.isTournamentManager(interaction))) {
-            interaction.reply({ content: "Insufficent permission" });
+            interaction.editReply({ content: "Insufficient permission" });
             return;
         }
 
         if (tournament.description !== interaction.user.id) {
-            interaction.reply({ content: "Cant delete participant, you are not the owner of this tournament" });
+            interaction.editReply({ content: "Cant delete participant, you are not the owner of this tournament" });
             return;
         }
 
@@ -59,7 +61,7 @@ export default class AddParticipant extends Commands {
         }
 
         if (!currrentParticipants.includes(userId)) {
-            interaction.reply({ content: `<@${userId}> is not on the bracket` });
+            interaction.editReply({ content: `<@${userId}> is not on the bracket` });
             return;
         }
 
@@ -71,12 +73,12 @@ export default class AddParticipant extends Commands {
 
         try {
             await this.challonge.participant.destroy(tournament_id, `${participantFullName!.id}`).then(() => {
-                interaction.reply({
-                    content: `<@${userId}> is deleted from the ${tournament.name} tournament bracket`
+                interaction.editReply({
+                    content: `<@${userId}> is deleted from ${tournament.name} tournament bracket`
                 });
             });
         } catch (err) {
-            interaction.reply({ content: `${err}` });
+            interaction.editReply({ content: `${err}` });
         }
     };
 }

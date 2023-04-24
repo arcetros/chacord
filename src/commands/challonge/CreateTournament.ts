@@ -45,8 +45,10 @@ export default class CreateTournament extends Commands {
                 .setRequired(false)
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
+        await interaction.deferReply();
+
         if (!(await this.isTournamentManager(interaction))) {
-            interaction.reply({ content: "Insufficent permission" });
+            interaction.editReply({ content: "Insufficient permission" });
             return;
         }
 
@@ -67,7 +69,7 @@ export default class CreateTournament extends Commands {
                 }
             });
 
-            interaction.reply({
+            interaction.editReply({
                 content: `Succesfully created ${response.name} with id ${"`"}${response.url}${"`"}`,
                 components: [
                     new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -79,7 +81,7 @@ export default class CreateTournament extends Commands {
                 ]
             });
         } catch (error) {
-            interaction.reply({
+            interaction.editReply({
                 content: `${error}`
             });
         }

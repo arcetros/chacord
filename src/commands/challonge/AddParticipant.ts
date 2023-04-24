@@ -39,6 +39,8 @@ export default class AddParticipant extends Commands {
                 .setRequired(false)
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
+        await interaction.deferReply();
+
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const participantName = interaction.options.get("participant_name")?.value as string;
         const seed = interaction.options.get("seed")?.value as string;
@@ -51,12 +53,12 @@ export default class AddParticipant extends Commands {
         );
 
         if (!(await this.isTournamentManager(interaction))) {
-            interaction.reply({ content: "Insufficent permission" });
+            interaction.editReply({ content: "Insufficient permission" });
             return;
         }
 
         if (tournament.description !== interaction.user.id) {
-            interaction.reply({ content: "Cant add participant, you are not the owner of this tournament" });
+            interaction.editReply({ content: "Cant add participant, you are not the owner of this tournament" });
             return;
         }
 
@@ -66,12 +68,12 @@ export default class AddParticipant extends Commands {
         }
 
         if (seed && isNaN(Number(seed))) {
-            interaction.reply({ content: "Seed value must be a number" });
+            interaction.editReply({ content: "Seed value must be a number" });
             return;
         }
 
         if (currrentParticipants.includes(userId)) {
-            interaction.reply({ content: `<@${userId}> is already on the bracket` });
+            interaction.editReply({ content: `<@${userId}> is already on the bracket` });
             return;
         }
 
@@ -87,10 +89,10 @@ export default class AddParticipant extends Commands {
                     }
                 })
                 .then(() => {
-                    interaction.reply({ content: `<@${userId}> added to ${tournament.name} tournament bracket` });
+                    interaction.editReply({ content: `<@${userId}> added to ${tournament.name} tournament bracket` });
                 });
         } catch (err) {
-            interaction.reply({ content: `${err}` });
+            interaction.editReply({ content: `${err}` });
         }
     };
 }
