@@ -124,12 +124,29 @@ export class Tournament {
     /**
      * @async
      * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @param {boolean} includeParticipants - false or true; includes an array of associated participant records
+     * @param {boolean} includeMatches - false or true; includes an array of associated match records
      * @description Start a tournament registered on your account
      * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
      * See the {@link https://api.challonge.com/v1/documents/tournaments/start} for a full list of object properties
      */
-    public async start(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/start`, { method: "POST" });
+    public async start(
+        tournament_id: string,
+        includeParticipants = false,
+        includeMatches = false
+    ): Promise<ITournament> {
+        const response = await this.client.request(`/${this.subdomain}${tournament_id}/start`, {
+            method: "POST",
+            includeParticipants: includeParticipants ? "1" : "0",
+            includeMatches: includeMatches ? "1" : "0"
+        });
+
+        const newResponse: ITournament = {
+            ...response,
+            matches: this.client.extractResponse(response?.matches),
+            participants: this.client.extractResponse(response?.participants)
+        };
+        return newResponse;
     }
 
     /**
@@ -146,12 +163,29 @@ export class Tournament {
     /**
      * @async
      * @param {string} tournament_id - The ID of the tournament to process the action.
+     * @param {boolean} includeParticipants - false or true; includes an array of associated participant records
+     * @param {boolean} includeMatches - false or true; includes an array of associated match records
      * @description Reset a tournament, clearing all scores and attachments. You can then add/remove/edit participants
      * @returns {Promise<ITournament>} - A promise that resolves with the tournament object
      * See the {@link https://api.challonge.com/v1/documents/tournaments/reset} for a full list of object properties
      */
-    public async reset(tournament_id: string): Promise<ITournament> {
-        return this.client.request(`/${this.subdomain}${tournament_id}/reset`, { method: "POST" });
+    public async reset(
+        tournament_id: string,
+        includeParticipants = false,
+        includeMatches = false
+    ): Promise<ITournament> {
+        const response = await this.client.request(`/${this.subdomain}${tournament_id}/reset`, {
+            method: "POST",
+            includeParticipants: includeParticipants ? "1" : "0",
+            includeMatches: includeMatches ? "1" : "0"
+        });
+
+        const newResponse: ITournament = {
+            ...response,
+            matches: this.client.extractResponse(response?.matches),
+            participants: this.client.extractResponse(response?.participants)
+        };
+        return newResponse;
     }
 
     /**
