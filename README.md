@@ -23,6 +23,7 @@ Chacord comes with the following features:
     -   Delete participant
     -   Bulk add participants
     -   Randomize participants seed (all of them)
+    -   Clear all participants
 -   Some supporting utility commands
 
 The bot uses the Challonge API to manage tournaments, so you'll need a Challonge account and API key to use these commands. We're constantly working on adding new features to the bot, so stay tuned for updates!

@@ -9,9 +9,9 @@ export default class StartTournament extends Commands {
         super(client);
         this.challonge = new Challonge({ api_key: process.env.CHALLONGE_API_KEY as string });
     }
-    name = "randomseed";
+    name = "clearp";
     visible = true;
-    description = "Randomize seeds among participants. Only applicable before a tournament has started.";
+    description = "Deletes all participants in a tournament. (Only allowed if tournament hasn't started yet)";
     information = this.description;
     aliases = [];
     args = false;
@@ -42,15 +42,15 @@ export default class StartTournament extends Commands {
 
         if (tournament.description !== interaction.user.id) {
             interaction.editReply({
-                content: "Cant randomize participants seed, you are not the owner of this tournament"
+                content: "Cant clear participants, you are not the owner of this tournament"
             });
             return;
         }
 
         try {
-            await this.challonge.participant.randomize(tournament_id).then(() => {
+            await this.challonge.participant.clear(tournament_id).then(() => {
                 return interaction.editReply({
-                    content: `Successfully randomized ${tournament.participants.length} participants`
+                    content: `Successfully cleared ${tournament.participants.length} participants`
                 });
             });
         } catch (err) {
