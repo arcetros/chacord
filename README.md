@@ -18,6 +18,7 @@ Chacord comes with the following features:
     -   Create tournament
     -   Destroy tournament
     -   Start/Restart tournament
+    -   Join/leave tournament
 -   Participants
     -   Add participant
     -   Delete participant

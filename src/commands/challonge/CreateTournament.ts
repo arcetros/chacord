@@ -68,7 +68,7 @@ export default class CreateTournament extends Commands {
         const tournament_name = interaction.options.get("tournament_name")?.value as string;
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const tournament_date = interaction.options.get("tournament_date")!.value as string;
-        const is_private = Boolean(interaction.options.get("is_private")?.value as string);
+        const is_private = interaction.options.get("is_private")?.value as string;
 
         const dateTime = moment(tournament_date, "YYYY/MM/DD HH:mm:ss").toDate();
 
@@ -77,7 +77,7 @@ export default class CreateTournament extends Commands {
                 tournament: {
                     name: tournament_name,
                     tournamentType: "single elimination",
-                    description: `${interaction.user.id}, ${is_private ? is_private : false}`,
+                    description: `${interaction.user.id}, ${is_private === "true"}`,
                     url: tournament_id,
                     startAt: dateTime
                 }
