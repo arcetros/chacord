@@ -40,7 +40,7 @@ export default class DestroyTournament extends Commands {
             return;
         }
 
-        if (tournamentOwner !== interaction.user.id) {
+        if (tournamentOwner.split(",")[0] !== interaction.user.id) {
             interaction.editReply({ content: "Cant destroy tournament, you are not the owner of this tournament" });
             return;
         }

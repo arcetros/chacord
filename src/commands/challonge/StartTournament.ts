@@ -40,7 +40,7 @@ export default class StartTournament extends Commands {
             return;
         }
 
-        if (tournament.description !== interaction.user.id) {
+        if (tournament.description.split(",")[0] !== interaction.user.id) {
             interaction.editReply({ content: "Cant start tournament, you are not the owner of this tournament" });
             return;
         }

@@ -48,7 +48,7 @@ export default class BulkAddParticipants extends Commands {
             return;
         }
 
-        if (tournament.description !== interaction.user.id) {
+        if (tournament.description.split(",")[0] !== interaction.user.id) {
             interaction.editReply({ content: "Cant add participant, you are not the owner of this tournament" });
             return;
         }

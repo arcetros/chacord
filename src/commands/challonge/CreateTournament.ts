@@ -43,6 +43,19 @@ export default class CreateTournament extends Commands {
                 .setName("tournament_id")
                 .setDescription("When blank on create, a random URL will be generated for you")
                 .setRequired(false)
+        )
+        .addStringOption(option =>
+            option
+                .setName("is_private")
+                .setDescription("true is private, false is not (everyone can join)")
+                .setRequired(false)
+                .addChoices(
+                    {
+                        value: "true",
+                        name: "true"
+                    },
+                    { name: "false", value: "false" }
+                )
         );
     execute = async (interaction: CommandInteraction): Promise<void> => {
         await interaction.deferReply();
@@ -55,6 +68,7 @@ export default class CreateTournament extends Commands {
         const tournament_name = interaction.options.get("tournament_name")?.value as string;
         const tournament_id = interaction.options.get("tournament_id")?.value as string;
         const tournament_date = interaction.options.get("tournament_date")!.value as string;
+        const is_private = Boolean(interaction.options.get("is_private")?.value as string);
 
         const dateTime = moment(tournament_date, "YYYY/MM/DD HH:mm:ss").toDate();
 
@@ -63,7 +77,7 @@ export default class CreateTournament extends Commands {
                 tournament: {
                     name: tournament_name,
                     tournamentType: "single elimination",
-                    description: `${interaction.user.id}`,
+                    description: `${interaction.user.id}, ${is_private ? is_private : false}`,
                     url: tournament_id,
                     startAt: dateTime
                 }
