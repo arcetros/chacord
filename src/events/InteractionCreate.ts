@@ -11,16 +11,19 @@ export default class InteractionCreate extends Events {
         if (!interaction.isChatInputCommand) return;
         if (interaction instanceof CommandInteraction) {
             const command = client.commands.get(interaction.commandName);
+
             if (!command) {
                 client.logger.error(`Unknown slash command: ${command}`);
                 return;
             }
+
             if (!client.cooldowns.has(interaction.commandName)) {
                 client.cooldowns.set(interaction.commandName, new Collection());
             }
             const now = Date.now();
             const timestamps: any = client.cooldowns.get(interaction.commandName);
             const cooldownAmount = (command.cooldown || 1) * 1000;
+
             if (timestamps.has(interaction.user.id)) {
                 const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
                 if (now < expirationTime) {
@@ -32,8 +35,10 @@ export default class InteractionCreate extends Events {
                     });
                 }
             }
+
             timestamps.set(interaction.user.id, now);
             setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+
             try {
                 command.execute(interaction);
             } catch (e: unknown) {

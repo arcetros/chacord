@@ -2,7 +2,7 @@ import { CommandInteraction, SlashCommandBuilder, PermissionFlagsBits } from "di
 import Bot from "../structures/Bot";
 import Commands from "../structures/Commands";
 
-export default class InitRole extends Commands {
+export default class GiveTournamentRole extends Commands {
     constructor(public client: Bot) {
         super(client);
     }
@@ -25,37 +25,38 @@ export default class InitRole extends Commands {
     execute = async (interaction: CommandInteraction): Promise<void> => {
         await interaction.deferReply();
 
-        const guild = this.client.guilds.cache.get(interaction.guildId!);
-        const tournamentRole = this.getTournamentManagerRole(guild);
+        const { user: userId } = this.getCommandOptionValues(interaction, ["user"]);
 
-        if (!tournamentRole) {
-            interaction.editReply({ content: "Tournament Manager role not found, run /initrole first" });
-            return;
+        try {
+            const guild = this.client.guilds.cache.get(interaction.guildId!);
+            const tournamentRole = this.getTournamentManagerRole(guild);
+
+            if (!tournamentRole) {
+                throw new Error("Something went wrong try re-run the bots");
+            }
+
+            const newUserId = await this.sanitizeUserId(userId);
+
+            const targetMember = await guild?.members.fetch(newUserId);
+
+            if (!targetMember) {
+                interaction.editReply({ content: "User not found" });
+                return;
+            }
+
+            if (await this.isTournamentManager(interaction, targetMember.user.id)) {
+                if (!targetMember.permissions.has("Administrator")) {
+                    throw new Error(`<@${targetMember.user.id}> is already have Tournament Manager role`);
+                }
+            }
+
+            targetMember?.roles
+                .add(tournamentRole.id)
+                .then(() =>
+                    interaction.editReply({ content: `<@${targetMember.user.id}> is granted Tournament Manager role` })
+                );
+        } catch (err) {
+            interaction.editReply({ content: `${err}` });
         }
-
-        const userId = interaction.options.get("user")?.value as string;
-        const newUserId = await this.sanitizeUserId(userId, interaction);
-
-        if (typeof newUserId === "object") {
-            return;
-        }
-
-        const targetMember = await guild?.members.fetch(newUserId);
-
-        if (!targetMember) {
-            interaction.editReply({ content: "User not found" });
-            return;
-        }
-
-        if (await this.isTournamentManager(interaction, targetMember.user.id)) {
-            interaction.editReply({ content: `<@${targetMember.user.id}> is already have Tournament Manager role` });
-            return;
-        }
-
-        targetMember?.roles
-            .add(tournamentRole.id)
-            .then(() =>
-                interaction.editReply({ content: `<@${targetMember.user.id}> is granted Tournament Manager role` })
-            );
     };
 }

@@ -1,13 +1,10 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import Challonge from "../../api/Client";
 import Bot from "../../structures/Bot";
 import Commands from "../../structures/Commands";
 
 export default class AddParticipant extends Commands {
-    public challonge: Challonge;
     constructor(public client: Bot) {
         super(client);
-        this.challonge = new Challonge({ api_key: process.env.CHALLONGE_API_KEY as string });
     }
     name = "join";
     visible = true;
@@ -27,25 +24,24 @@ export default class AddParticipant extends Commands {
     execute = async (interaction: CommandInteraction): Promise<void> => {
         await interaction.deferReply();
 
-        const tournament_id = interaction.options.get("tournament_id")?.value as string;
-        const tournament = await this.challonge.tournament.show(tournament_id, true);
-
-        if (tournament.description.split(",")[1] === "true") {
-            interaction.editReply("This tournament is private, you need to ask the owner to join");
-            return;
-        }
-
-        // Map and extract the user ID inside bracket
-        const currrentParticipants = tournament.participants.map(
-            participant => participant.name.match(/^\[(.*?)\]\s*(.*)$/)[1]
-        );
-
-        if (currrentParticipants.includes(interaction.user.id)) {
-            interaction.editReply("You are already joined this tournament");
-            return;
-        }
+        const { tournament_id } = this.getCommandOptionValues(interaction, ["tournament_id"]);
 
         try {
+            const tournament = await this.challonge.tournament.show(tournament_id, true);
+
+            if (tournament.description.split(",")[1] === "true") {
+                throw new Error("This tournament is private, you need to ask the owner to join");
+            }
+
+            // Map and extract the user ID inside bracket
+            const currrentParticipants = tournament.participants.map(
+                participant => participant.name.match(/^\[(.*?)\]\s*(.*)$/)[1]
+            );
+
+            if (currrentParticipants.includes(interaction.user.id)) {
+                throw new Error("You are already joined this tournament");
+            }
+
             await this.challonge.participant
                 .create(tournament_id, {
                     participant: {

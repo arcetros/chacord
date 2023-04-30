@@ -1,13 +1,10 @@
 import Commands from "../../structures/Commands";
-import Challonge from "../../api/Client";
 import Bot from "../../structures/Bot";
 import { CacheType, CommandInteraction, SlashCommandBuilder } from "discord.js";
 
 export default class DestroyTournament extends Commands {
-    public challonge: Challonge;
     constructor(public client: Bot) {
         super(client);
-        this.challonge = new Challonge({ api_key: process.env.CHALLONGE_API_KEY as string });
     }
     name = "tdestroy";
     visible = true;
@@ -32,20 +29,12 @@ export default class DestroyTournament extends Commands {
     execute = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
         await interaction.deferReply();
 
-        const tournament_id = interaction.options.get("tournament_id")?.value as string;
-        const tournamentOwner = (await this.challonge.tournament.show(tournament_id)).description;
-
-        if (!(await this.isTournamentManager(interaction))) {
-            interaction.editReply({ content: "Insufficient permission" });
-            return;
-        }
-
-        if (tournamentOwner.split(",")[0] !== interaction.user.id) {
-            interaction.editReply({ content: "Cant destroy tournament, you are not the owner of this tournament" });
-            return;
-        }
-
+        const { tournament_id } = this.getCommandOptionValues(interaction, ["tournament_id"]);
         try {
+            await this.checkTournamentManager(interaction);
+            const tournament = await this.challonge.tournament.show(tournament_id);
+            this.checkOwner(interaction, tournament.description);
+
             const response = await this.challonge.tournament.destroy(tournament_id);
             interaction.editReply({ content: `${response.name} is successfully destroyed` });
         } catch (err) {

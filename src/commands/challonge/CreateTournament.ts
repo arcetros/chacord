@@ -1,14 +1,11 @@
 import { CommandInteraction, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import moment from "moment";
-import Challonge from "../../api/Client";
 import Bot from "../../structures/Bot";
 import Commands from "../../structures/Commands";
 
 export default class CreateTournament extends Commands {
-    public challonge: Challonge;
     constructor(public client: Bot) {
         super(client);
-        this.challonge = new Challonge({ api_key: process.env.CHALLONGE_API_KEY as string });
     }
     name = "tcreate";
     visible = true;
@@ -60,25 +57,22 @@ export default class CreateTournament extends Commands {
     execute = async (interaction: CommandInteraction): Promise<void> => {
         await interaction.deferReply();
 
-        if (!(await this.isTournamentManager(interaction))) {
-            interaction.editReply({ content: "Insufficient permission" });
-            return;
-        }
-
-        const tournament_name = interaction.options.get("tournament_name")?.value as string;
-        const tournament_id = interaction.options.get("tournament_id")?.value as string;
-        const tournament_date = interaction.options.get("tournament_date")!.value as string;
-        const is_private = interaction.options.get("is_private")?.value as string;
-
-        const dateTime = moment(tournament_date, "YYYY/MM/DD HH:mm:ss").toDate();
+        const options = this.getCommandOptionValues(interaction, [
+            "tournament_name",
+            "tournament_id",
+            "tournament_date",
+            "is_private"
+        ]);
+        const dateTime = moment(options.tournament_date, "YYYY/MM/DD HH:mm:ss").toDate();
 
         try {
+            await this.checkTournamentManager(interaction);
             const response = await this.challonge.tournament.create({
                 tournament: {
-                    name: tournament_name,
+                    name: options.tournament_name,
                     tournamentType: "single elimination",
-                    description: `${interaction.user.id}, ${is_private === "true"}`,
-                    url: tournament_id,
+                    description: `${interaction.user.id}, ${options.is_private === "true"}`,
+                    url: options.tournament_id,
                     startAt: dateTime
                 }
             });
