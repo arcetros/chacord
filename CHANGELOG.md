@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/arcetros/chacord/compare/v1.1.0...v1.2.0) (2023-04-30)
+
+
+### Features
+
+* **commands:** add AddParticipant command ([2d9fd2f](https://github.com/arcetros/chacord/commit/2d9fd2f7ac599ab8def8824fa9f89e2f3f9cb91d))
+* **commands:** add BulkAddParticipants command ([ee75bbc](https://github.com/arcetros/chacord/commit/ee75bbc8a627117806cf2205313362885b1adfc9))
+* **commands:** add ClearParticipants command ([8e0d8dc](https://github.com/arcetros/chacord/commit/8e0d8dcd57d9c2ed27906f594662015f1456c3ab))
+* **commands:** add DeleteParticipant command ([d39d644](https://github.com/arcetros/chacord/commit/d39d644a583d7e9254a707c0550f3648a612d879))
+* **commands:** add join/leave command ([8f0d032](https://github.com/arcetros/chacord/commit/8f0d0329fc27efc13057ae305cf68479fb1c50a2))
+* **commands:** add RandomizeSeed command ([38c3075](https://github.com/arcetros/chacord/commit/38c3075c13aaf40c998188766666cce14cff53af))
+* **commands:** define tournament is_private in desc ([8ab759a](https://github.com/arcetros/chacord/commit/8ab759a1992b4d2d1a0303b4fe44cb23c3f3cf43))
+
+
+### Bug Fixes
+
+* **AddParticipant:** add conditions ([f8e31be](https://github.com/arcetros/chacord/commit/f8e31be1df98eca1e0f2bf38560182aaf1c0c0e2))
+* **commands:** add deferReply() for challonge requests ([#30](https://github.com/arcetros/chacord/issues/30)) ([bc613e1](https://github.com/arcetros/chacord/commit/bc613e1ea484d059385ba5629bc41b1e63399aec))
+
 ## 1.1.0 (2023-04-20)
 
 
